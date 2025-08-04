@@ -2,6 +2,7 @@ import pymysql
 
 from dotenv import load_dotenv
 import os
+from formatter import print_film_info
 
 # Загружаем переменные из .env
 load_dotenv()
@@ -35,7 +36,7 @@ def pagination(func):
             if not films:
                 print("Нет фильмов на этой странице.")
             for t in films:
-                print(t[0], f"(жанр: {t[1]})")
+                print_film_info(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7])
             print("\nНавигация: 1 - предыдущая, 2 - следующая, 3 - выход")
             nav = input("Ваш выбор: ")
             match nav:
