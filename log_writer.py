@@ -9,12 +9,13 @@ MONGODB_URL_READ = os.getenv("MONGODB_URL_READ")
 
 def connect_mongo(func):
     """Декоратор для подключения к MongoDB и обработки ошибок"""
-    def wrapper(*args, **kwargs):
+
+    def wrapper(*args):
         try:
             client = MongoClient(MONGODB_URL_READ)
             db = client["ich_edit"]
             collection = db["final_project_170225_KhazievaL"]
-            result = func(collection, *args, **kwargs)
+            result = func(*args, collection=collection)
             client.close()
             return result
         except errors.ConnectionFailure:
@@ -28,10 +29,9 @@ def connect_mongo(func):
 
 
 @connect_mongo
-def write_log(collection, request_type, *args):
+def write_log(request_type, *args, collection):
     doc = {
-        "type": request_type,
-        "request": " ".join(str(arg) for arg in args),
+        "request": f"{request_type} {" ".join(str(arg) for arg in args)}",
         "createdAt": datetime.now(UTC)
     }
     collection.insert_one(doc)
@@ -53,7 +53,8 @@ def pop_requests(collection):
 def latest_requests(collection):
     result = collection.find().sort("createdAt", DESCENDING).limit(5)
     for i, doc in enumerate(result, start=1):
-        print(f"{i}. [{doc['createdAt']}] {doc['type']} {doc['request']}")
+        print(f"{i}. [{doc['createdAt']}] {doc['request']}")
+
 
 if __name__ == '__main__':
-    write_log("ddfgd", "fgfhdfgh fghfgh dfgh")
+    write_log("fgfhdfgh fghfgh dfgh", collection="ddfgd")

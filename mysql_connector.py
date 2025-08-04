@@ -56,18 +56,22 @@ def pagination(func):
 def print_genres(cursor):
     cursor.execute("SELECT category_id, name FROM category;")
     genres = cursor.fetchall()
+    valid_genres = []
     print("Available genres:")
     for t in genres:
+        valid_genres.append(t[0])
         print(f"{t[0]}: {t[1]}")
-
+    return valid_genres
 
 @connect_mysql
 def print_year_range(cursor):
     cursor.execute("SELECT MIN(release_year), MAX(release_year) FROM film;")
     years = cursor.fetchall()
+    valid_years = range(years[0][0], years[0][1] + 1)
     print("Available release years:")
     for t in years:
         print(f"Movies in the database were released between {t[0]} and {t[1]}.")
+    return valid_years
 
 @connect_mysql
 @pagination
