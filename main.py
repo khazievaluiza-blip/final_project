@@ -1,19 +1,17 @@
 from mysql_connector import search_by_title, print_genres, print_year_range, search_by_genre_and_years
 from log_writer import write_log, pop_requests, latest_requests
+from formatter import print_menu
 
-def main_menu():
+def main_menu()-> None:
+    """The function launches a user menu for searching movies in database.
+        When a menu option is selected, the corresponding search function is executed.
+    """
     while True:
-        print("\nМеню:")
-        print("1. Поиск по названию фильма")
-        print("2. Поиск по жанру и диапазону годов выпуска")
-        print("3. Популярные запросы")
-        print("4. Последние запросы")
-        print("0. Выход")
-        choice = input("Выберите пункт меню: ")
-
+        print_menu()
+        choice = input("Enter your choice: ")
         match choice:
             case "1":
-                title = input("Введите название или его часть: ")
+                title = input("Enter a keyword or part of the movie title: ")
                 write_log('search_by_title', title)
                 search_by_title(title)
             case "2":

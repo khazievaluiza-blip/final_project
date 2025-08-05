@@ -8,7 +8,7 @@ MONGODB_URL_READ = os.getenv("MONGODB_URL_READ")
 
 
 def connect_mongo(func):
-    """Декоратор для подключения к MongoDB и обработки ошибок"""
+    """Decorator function for connecting to MongoDB and handling errors"""
 
     def wrapper(*args):
         try:
