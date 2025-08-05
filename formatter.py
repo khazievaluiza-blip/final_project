@@ -3,7 +3,7 @@ from colorama import init, Fore, Back, Style
 init(autoreset=True)
 
 def print_menu() -> None:
-    """Displays the main user interface menu."""
+    """Displays the main user interface menu using the colorama library."""
     print(f"{Fore.MAGENTA}{"\n--- Find movies in Sakila ---"}")
     print(f"{Fore.CYAN}{"\nChoose an option:"}")
     print(f"{Fore.CYAN}1.{Style.RESET_ALL} Search by movie title")
@@ -18,4 +18,4 @@ def print_film_info(title, year, genre, language, length, rating, description, a
     print(f"Length: {length} min   Rating: {rating}")
     print(f"Description: {description}")
     print(f"Actors: {actors}")
-    print(f"{Fore.MAGENTA}{'-' * 60}")
+    print(f"{Fore.MAGENTA}{'-' * 120}")

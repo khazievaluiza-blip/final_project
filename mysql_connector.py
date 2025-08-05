@@ -1,10 +1,9 @@
 import pymysql
-
 from dotenv import load_dotenv
 import os
 from formatter import print_film_info
+from colorama import init, Fore, Back, Style
 
-# Загружаем переменные из .env
 load_dotenv()
 
 dbconfig = {
@@ -15,8 +14,12 @@ dbconfig = {
 }
 
 def connect_mysql(func):
-    """Возвращает соединение с MySQL с курсором в виде словаря."""
-    def wrapper(*args, **kwargs):
+    """
+    Decorator function for connecting to MongoDB by using context managers `with`
+    and handling errors. This decorator passes the database cursor as the first argument
+    to the wrapped function.
+    """
+    def wrapper(*args):
         try:
             with pymysql.connect(**dbconfig) as connection:
                 with connection.cursor() as cursor:
@@ -28,29 +31,25 @@ def connect_mysql(func):
 
 def pagination(func):
     """Добавляет пагинацию с выводом фильмов."""
-    def wrapper(*args, **kwargs):
+    def wrapper(*args):
         page = 1
-        print(f"\n--- Страница {page} ---")
+        print(f"\n{Fore.MAGENTA}{'-'*56} Page {page} {'-' * 56}")
         while True:
             films = func(*args, page=page)
             if not films:
                 print("Нет фильмов на этой странице.")
             for t in films:
                 print_film_info(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7])
-            print("\nНавигация: 1 - предыдущая, 2 - следующая, 3 - выход")
-            nav = input("Ваш выбор: ")
+            print(f"{Fore.CYAN}\nChoose an option: 1{Style.RESET_ALL} - Next Page, {Fore.CYAN}0{Style.RESET_ALL} - Exit")
+            nav = input("Enter your choice: ")
             match nav:
-                case "3":
+                case "0":
                     break
                 case "1":
-                    if page > 1:
-                        page -= 1
-                    else:
-                        print("Вы уже на первой странице.")
-                case "2":
                     page += 1
                 case _:
-                    print("Неверный ввод.")
+                    print("Invalid input. Please try again.")
+                    continue
     return wrapper
 
 @connect_mysql

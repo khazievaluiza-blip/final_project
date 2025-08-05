@@ -1,3 +1,4 @@
+from pymongo.synchronous.collection import Collection
 from pymongo import MongoClient, errors, DESCENDING
 from datetime import datetime, UTC
 from dotenv import load_dotenv
@@ -19,17 +20,25 @@ def connect_mongo(func):
             client.close()
             return result
         except errors.ConnectionFailure:
-            print("Ошибка подключения к MongoDB")
+            print("MongoDB connection error")
             return None
         except errors.OperationFailure:
-            print("Ошибка авторизации или выполнения запроса")
+            print("Authentication or query execution error")
             return None
 
     return wrapper
 
 
 @connect_mongo
-def write_log(request_type, *args, collection):
+def write_log(request_type: str, *args: str, collection: Collection) -> None:
+    """
+        Writes a log entry to the MongoDB collection.
+
+        Args:
+            request_type: The type of user action.
+            *args: Additional parameters of the request.
+            collection: MongoDB collection object (passed from the decorator).
+        """
     doc = {
         "request": f"{request_type} {" ".join(str(arg) for arg in args)}",
         "createdAt": datetime.now(UTC)

@@ -3,8 +3,9 @@ from log_writer import write_log, pop_requests, latest_requests
 from formatter import print_menu
 
 def main_menu()-> None:
-    """The function launches a user menu for searching movies in database.
-        When a menu option is selected, the corresponding search function is executed.
+    """
+    The function launches a user menu for searching movies in database.
+    When a menu option is selected, the corresponding search function is executed.
     """
     while True:
         print_menu()
