@@ -1,6 +1,7 @@
 from mysql_connector import search_by_title, print_genres, print_year_range, search_by_genre_and_years
 from log_writer import write_log, pop_requests, latest_requests
 from formatter import print_menu
+from colorama import init, Fore, Back, Style
 
 def main_menu()-> None:
     """
@@ -16,27 +17,36 @@ def main_menu()-> None:
                 write_log('search_by_title', title)
                 search_by_title(title)
             case "2":
-                print_genres()
-                genre = input("Введите номер жанра: ")
-                print_year_range()
-                min_year = input("From year: ")
-                max_year = input("To year: ")
-                write_log('search_by_genre_and_years', genre, min_year, max_year)
-                search_by_genre_and_years(genre, min_year, max_year)
+                valid_genres = print_genres()
+                genre = input("Enter genre number: ")
+                while genre not in valid_genres:
+                    genre = input("Invalid genre. Please try again: ")
+                years = print_year_range()
+                min_year_choice = int(input("From year: "))
+                while min_year_choice < years[0][0] or min_year_choice > years[0][1]:
+                    min_year_choice = int(input("Invalid year. Please try again: "))
+                max_year_choice = input("To choose a single year, just press Enter. To define a range, enter the second year: ")
+                if max_year_choice == "":
+                    max_year_choice = min_year_choice
+                else:
+                    max_year_choice = int(max_year_choice)
+                while max_year_choice < years[0][0] or max_year_choice > years[0][1]:
+                    max_year_choice = input("Invalid year. Please try again: ")
+                write_log('search_by_genre_and_years', genre, min_year_choice, max_year_choice)
+                search_by_genre_and_years(genre, min_year_choice, max_year_choice)
             case "3":
-                print("Самые популярные запросы:")
+                print(f"{Fore.MAGENTA}{"\nMost frequent search queries:"}")
                 pop_requests()
             case "4":
-                print("5 последних запросов")
+                print("5 last search queries")
                 latest_requests()
             case "0":
-                print("Выход из программы.")
+                print("Exit program")
                 break
             case _:
-                print("Неверный выбор.")
+                print("Invalid input. Please try again.")
 
-
-
-main_menu()
+if __name__ == "__main__":
+    main_menu()
 
 
