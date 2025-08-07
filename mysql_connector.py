@@ -112,13 +112,22 @@ def search_by_title(cursor, title: str, page: int) ->list[tuple]:
     offset = (page - 1) * 10
     title_mask = f"%{title}%"
     cursor.execute("""
-                   SELECT f.title, f.release_year, c.name, l.name, f.length, f.rating, f.description, group_concat(concat(a.first_name, " ", a.last_name) SEPARATOR ', ') AS actors
+                    SELECT f.title, f.release_year, c.name, l.name, f.length, 
+                       CASE f.rating
+                            WHEN 'G' THEN 'G: General Audiences'
+                            WHEN 'PG' THEN 'PG: Parental Guidance Suggested'
+                            WHEN 'PG-13' THEN 'PG-13: Some material may be inappropriate for children under 13'
+                            WHEN 'R' THEN 'R: Under 17 requires accompanying parent or adult guardian'
+                            WHEN 'NC-17' THEN 'NC-17: Only for adults (18+)'
+                            ELSE 'Other'
+                        END AS rating_text, 
+                        f.description, group_concat(concat(a.first_name, " ", a.last_name) SEPARATOR ', ') AS actors
                     FROM film as f
-                    LEFT JOIN film_category as fc USING (film_id)
-                    LEFT JOIN category as c USING (category_id)
-                    LEFT JOIN language as l USING (language_id)
-                    LEFT JOIN film_actor as fa USING (film_id)
-                    LEFT JOIN actor as a USING (actor_id)
+                        LEFT JOIN film_category as fc USING (film_id)
+                        LEFT JOIN category as c USING (category_id)
+                        LEFT JOIN language as l USING (language_id)
+                        LEFT JOIN film_actor as fa USING (film_id)
+                        LEFT JOIN actor as a USING (actor_id)
                     WHERE f.title LIKE %s
                     GROUP BY f.title
                     LIMIT 10 OFFSET %s
@@ -146,13 +155,22 @@ def search_by_genre_and_years(cursor, genre: str, min_year: str, max_year: str, 
     """
     offset = (page - 1) * 10
     cursor.execute("""
-                   SELECT f.title, f.release_year, c.name, l.name, f.length, f.rating, f.description, group_concat(concat(a.first_name, " ", a.last_name) SEPARATOR ', ') AS actors
+                    SELECT f.title, f.release_year, c.name, l.name, f.length, 
+                       CASE f.rating
+                            WHEN 'G' THEN 'G: General Audiences'
+                            WHEN 'PG' THEN 'PG: Parental Guidance Suggested'
+                            WHEN 'PG-13' THEN 'PG-13: Some material may be inappropriate for children under 13'
+                            WHEN 'R' THEN 'R: Under 17 requires accompanying parent or adult guardian'
+                            WHEN 'NC-17' THEN 'NC-17: Only for adults (18+)'
+                            ELSE 'Other'
+                        END AS rating_text, 
+                       f.description, group_concat(concat(a.first_name, " ", a.last_name) SEPARATOR ', ') AS actors
                     FROM film as f
-                    LEFT JOIN film_category as fc USING (film_id)
-                    LEFT JOIN category as c USING (category_id)
-                    LEFT JOIN language as l USING (language_id)
-                    LEFT JOIN film_actor as fa USING (film_id)
-                    LEFT JOIN actor as a USING (actor_id)
+                        LEFT JOIN film_category as fc USING (film_id)
+                        LEFT JOIN category as c USING (category_id)
+                        LEFT JOIN language as l USING (language_id)
+                        LEFT JOIN film_actor as fa USING (film_id)
+                        LEFT JOIN actor as a USING (actor_id)
                     WHERE c.category_id = %s
                     AND f.release_year BETWEEN %s AND %s
                     GROUP BY f.title
