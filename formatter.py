@@ -1,4 +1,8 @@
-from colorama import init, Fore, Back, Style
+from colorama import init, Fore, Style
+from rich.console import Console
+from rich.panel import Panel
+from rich.text import Text
+from rich import box
 
 init(autoreset=True)
 
@@ -14,10 +18,13 @@ def print_menu() -> None:
 
 def print_film_info(title: str, year: int, genre: str, language: str, length: str, rating: str, description: str, actors: str) -> None:
     """Displays detailed information about a film"""
-    print(f"{Style.BRIGHT}{Fore.CYAN}\nTitle: {title}")
-    print(f"Year: {year}   Genre: {genre}   Language: {language}")
-    print(f"Length: {length} min   Rating: {rating}")
-    print(f"Description: {description}")
-    print(f"Actors: {actors}")
-    print(f"{Fore.MAGENTA}{'-' * 120}")
+    console = Console()
+    info = Text()
+    info.append(f"Title: {title}\n")
+    info.append(f"Year: {year}   Genre: {genre}   Language: {language}\n")
+    info.append(f"Length: {length} min   Rating: {rating}\n")
+    info.append(f"Description: {description}\n")
+    info.append(f"Actors: {actors}")
 
+    panel = Panel(info, box=box.ROUNDED, padding=(1, 2), expand=False, border_style="green")
+    console.print(panel)

@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import os
 from typing import Callable
 from formatter import print_film_info
-from colorama import init, Fore, Back, Style
+from colorama import Fore, Style
 
 load_dotenv()
 
@@ -45,7 +45,7 @@ def pagination(func: Callable) -> Callable:
                 print("No movies on this page")
             for t in films:
                 print_film_info(t[0], t[1], t[2], t[3], t[4], t[5], t[6], t[7])
-            print(f"{Fore.CYAN}\nChoose an option: 1{Style.RESET_ALL} - Next Page, {Fore.CYAN}any other{Style.RESET_ALL} - Exit")
+            print(f"{Fore.CYAN}\nChoose an option: 1{Style.RESET_ALL} - Next Page, {Fore.CYAN}any other{Style.RESET_ALL} - Exit to main menu")
             nav = input("Enter your choice: ")
             if nav == "1":
                 page += 1

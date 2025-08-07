@@ -1,7 +1,6 @@
 from pymongo.synchronous.collection import Collection
-from pymongo import MongoClient, errors, DESCENDING
+from pymongo import MongoClient, errors
 from datetime import datetime, UTC
-from colorama import Fore, Style
 from typing import Callable
 from dotenv import load_dotenv
 import os
@@ -46,42 +45,5 @@ def write_log(request_type: str, *args: str, collection: Collection) -> None:
     }
     collection.insert_one(doc)
 
-
-
-
-@connect_mongo
-def pop_requests(collection: Collection) -> None:
-    """
-    The function displays the 5 most frequent search queries stored in the MongoDB collection
-    and their number. This function uses an aggregation pipeline with `$sortByCount` to group and
-    sort the requests by frequency in descending order.
-    :param collection: The MongoDB collection object provided by the `connect_mongo` decorator.
-    """
-    result = collection.aggregate([
-        {
-            '$sortByCount': '$request'
-        }, {
-            '$limit': 5
-        }
-    ])
-    for i, doc in enumerate(result, start=1):
-        print(f"{Fore.MAGENTA}{i}.{Style.RESET_ALL} {doc['_id']} — {Fore.MAGENTA}{doc['count']}{Style.RESET_ALL} times")
-
-
-
-
-@connect_mongo
-def latest_requests(collection: Collection) -> None:
-    """
-    The function displays the 5 most recent search requests stored in the MongoDB collection.
-    This function connects to the MongoDB collection using the `connect_mongo` decorator,
-    sorts the documents by the `createdAt` field in descending order.
-
-    :param collection: The MongoDB collection object provided by the `connect_mongo` decorator.
-    """
-    result = collection.find().sort("createdAt", -1).limit(5)
-    for i, doc in enumerate(result, start=1):
-        print(f"{Fore.MAGENTA}{i}.{Style.RESET_ALL} {doc['request']}")
-
-
-
+if __name__ == "__main__":
+    write_log("Test", "test")

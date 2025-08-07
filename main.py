@@ -1,7 +1,8 @@
 from mysql_connector import search_by_title, print_genres, print_year_range, search_by_genre_and_years
-from log_writer import write_log, pop_requests, latest_requests
+from log_writer import write_log
+from log_stats import pop_requests, latest_requests
 from formatter import print_menu
-from colorama import init, Fore, Back, Style
+from colorama import Fore
 
 def main_menu()-> None:
     """
@@ -10,8 +11,7 @@ def main_menu()-> None:
     """
     while True:
         print_menu()
-        choice = input("Enter your choice: ")
-        match choice:
+        match input("Enter your choice: "):
             case "1":
                 title = input("Enter a keyword or part of the movie title: ")
                 write_log('search_by_title', title)
@@ -38,7 +38,7 @@ def main_menu()-> None:
                 print(f"{Fore.MAGENTA}{"\nMost frequent search queries:"}")
                 pop_requests()
             case "4":
-                print("5 last search queries")
+                print(f"{Fore.MAGENTA}{"\n5 last search queries:"}")
                 latest_requests()
             case "0":
                 print("Exit program")
